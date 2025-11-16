@@ -1,0 +1,22 @@
+# AWS CLI Assistant - Lite Edition
+
+## What It Does
+Converts natural language commands into AWS CLI commands with real-time validation
+
+## Core Features
+- 5 AWS Services: S3, DynamoDB, EC2, Lambda, IAM
+- Natural language processing
+- Real-time command validation
+- Live AWS environment testing
+
+## Target Users
+- AWS beginners learning CLI
+- DevOps engineers
+- Cloud architects
+- Development teams
+
+## Use Cases
+- Quick AWS resource queries
+- Learning AWS CLI syntax
+- Automating common tasks
+- Reducing CLI documentation lookups
