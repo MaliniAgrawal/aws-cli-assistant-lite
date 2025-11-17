@@ -1,0 +1,55 @@
+# This workflow publishes the package to PyPI whenever a new Git tag is pushed.
+
+name: Publish Python Package to PyPI
+
+# 1. Trigger the workflow only when a new tag is pushed.
+on:
+  push:
+    tags:
+      - 'v[0-9]+.*' # Matches tags like v1.0.0, v1.0.1, v2.0.0
+
+jobs:
+  publish:
+    name: Build and Publish Package
+    # Runs on the latest Ubuntu environment
+    runs-on: ubuntu-latest
+    
+    # Environment variables (optional but good practice)
+    env:
+      PYTHON_VERSION: '3.x'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history for setuptools_scm to work correctly
+          fetch-depth: 0 
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          # Caching dependencies speeds up the build process
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          # Install 'build' for creating distribution files
+          # Install 'twine' for securely uploading the files
+          pip install build twine
+
+      - name: Build Distribution Files
+        # This command creates the .tar.gz (source) and .whl (binary) files
+        run: python -m build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # This secret holds the PyPI API token you created
+          # It is automatically passed to Twine for secure authentication.
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          # The username is implicitly set to __token__ when using a token
+          
+          # We specify the directory where 'python -m build' puts the files
+          # This ensures only the official distribution files are uploaded.
+          packages_dir: dist
