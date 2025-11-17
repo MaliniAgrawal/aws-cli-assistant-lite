@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aws-cli-assistant-lite"
-version = "1.0.0"
+version = "1.0.1"
 description = "Natural language to AWS CLI converter with real-time validation"
 readme = "README.md"
 authors = [{name = "Malini Agrawal", email = "aws2minutes@gmail.com"}]
