@@ -7,6 +7,7 @@ AWS CLI Assistant converts your natural language requests into proper AWS CLI co
 ✅ **Natural Language Processing** - Just describe what you want to do  
 ✅ **5 AWS Services** - S3, DynamoDB, EC2, Lambda, IAM  
 ✅ **Real-time Validation** - Commands tested against your actual AWS account  
+✅ **3 Usage Modes** - MCP, Web Interface, Interactive CLI  
 ✅ **Instant Results** - Get command syntax and execution results immediately  
 
 ## Supported Operations
@@ -47,73 +48,101 @@ AWS CLI Assistant converts your natural language requests into proper AWS CLI co
 
 ### Quick Start
 
-1. **Clone or download the package**
+1. **Install from PyPI**
 ```bash
-git clone <https://github.com/MaliniAgrawal/aws-cli-assistant-lite.git>
-cd aws-cli-assistant-lite
+pip install aws-cli-assistant-lite
 ```
 
-2. **Install dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-3. **Configure AWS credentials**
+2. **Configure AWS credentials**
 ```bash
 aws configure
 ```
 
-4. **Start the MCP server**
+3. **Choose your mode and start using:**
+
+**MCP Mode (Claude Desktop):**
 ```bash
-python mcp_server.py
+aws-cli-assistant --mode mcp
 ```
-
-5. **Connect to Claude Desktop** (if using MCP)
-Add to your `claude_desktop_config.json`(given exaple below is my path in python evn):
+Add to your `claude_desktop_config.json`:
 ```json
-
 {
   "mcpServers": {
     "aws-cli-assistant-lite": {
-      "command": "C:/myworkspace/mcp/MCP-phase-1/venv-phase-1/Scripts/python.exe",
-      "args": [
-        "C:/myworkspace/mcp/MCP-phase-1/src/mcp_server.py"
-      ],
+      "command": "aws-cli-assistant",
+      "args": ["--mode", "mcp"],
       "env": {
-        "AWS_REGION": "us-west-1",
-        "PYTHONPATH": "C:/myworkspace/mcp/MCP-phase-1/src",
-        "PYTHONUNBUFFERED": "1"
+        "AWS_REGION": "us-west-1"
       }
-      }
+    }
   }
 }
-                                                    
+```
+
+**Web Interface Mode:**
+```bash
+aws-cli-assistant --mode web
+# Visit http://127.0.0.1:8000
+```
+
+**Interactive CLI Mode:**
+```bash
+aws-cli-assistant --mode cli
+```
+
+## Usage Modes
+
+### 🔗 MCP Mode (Claude Desktop Integration)
+```bash
+aws-cli-assistant --mode mcp  # Default mode
+```
+- Integrates directly with Claude Desktop
+- No user interaction needed
+- Configure once in Claude settings
+
+### 🌐 Web Interface Mode
+```bash
+aws-cli-assistant --mode web
+```
+- Opens web interface at http://127.0.0.1:8000
+- Simple HTML form for testing
+- REST API endpoints available
+
+### 💻 Interactive CLI Mode
+```bash
+aws-cli-assistant --mode cli
+```
+**Example session:**
+```
+Enter your request: list my s3 buckets
+
+📋 Generated Command: aws s3 ls
+💡 Explanation: Lists all S3 buckets in your account
+✅ Validation: Found 19 buckets
+
+Execute this command? (y/n): y
+
+⚡ Executing: aws s3 ls
+✅ Success!
+2023-01-15 12:34:56 my-bucket-1
+2023-01-15 12:34:56 my-bucket-2
 ```
 
 ## Usage Examples
 
 ### Example 1: List S3 Buckets
 **Input:** "list all my s3 buckets"  
-**Output:** 
-```bash
-aws s3 ls
-```
+**Output:** `aws s3 ls`  
 **Validation:** ✅ Valid - Found 19 buckets
 
 ### Example 2: List Lambda Functions
 **Input:** "show me lambda functions"  
-**Output:** 
-```bash
-aws lambda list-functions --region us-west-1
-```
+**Output:** `aws lambda list-functions --region us-west-1`  
 **Validation:** ✅ Valid - Found 11 functions
 
 ### Example 3: List DynamoDB Tables
 **Input:** "list dynamodb tables"  
-**Output:** 
-```bash
-aws dynamodb list-tables
-```
+**Output:** `aws dynamodb list-tables`  
 **Validation:** ✅ Valid - Found 4 tables
 
 ## Architecture
@@ -132,13 +161,16 @@ Result + Validation Status
 
 ## API Reference
 
-### `generate_aws_cli(query: str)`
-Converts natural language to AWS CLI command
+### Web Mode Endpoints
 
-**Parameters:**
-- `query` (string): Natural language request
+**POST /generate** - Convert natural language to AWS CLI
+```bash
+curl -X POST http://127.0.0.1:8000/generate \
+  -H "Content-Type: application/json" \
+  -d '{"query": "list my s3 buckets"}'
+```
 
-**Returns:**
+**Response:**
 ```json
 {
   "command": "aws s3 ls",
@@ -153,24 +185,15 @@ Converts natural language to AWS CLI command
 }
 ```
 
-### `health_check()`
-Verifies service status
+**GET /health** - Service health check
+**GET /services** - List supported services  
+**GET /** - Web interface
 
-**Returns:**
-```json
-{
-  "status": "ok",
-  "model": "local-transformer"
-}
-```
+### MCP Mode Functions
 
-### `list_supported_services()`
-Returns supported AWS services
-
-**Returns:**
-```json
-["s3", "dynamodb", "ec2", "lambda", "iam"]
-```
+- `generate_aws_cli(query: str)` - Main conversion function
+- `health_check()` - Service status
+- `list_supported_services()` - Available services
 
 ## Configuration
 
@@ -252,4 +275,13 @@ Transitioned from Banking & Finance to AWS Cloud Engineering in 2021
 ---
 
 **Ready to simplify your AWS CLI experience?**  
-Download and get started today!# pip install aws-cli-assistant-lite
+
+```bash
+pip install aws-cli-assistant-lite
+aws-cli-assistant --mode cli  # Start interactive mode
+```
+
+**Choose your preferred mode:**
+- `--mode mcp` - Claude Desktop integration
+- `--mode web` - Web interface  
+- `--mode cli` - Interactive command line
