@@ -58,14 +58,31 @@ def run_http():
     from http_adapter import app, run_http_app
     run_http_app(app)
 
+def run_cli():
+    # lazy import for CLI interface
+    from cli_interface import run_cli_interface
+    run_cli_interface()
+
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--http", action="store_true", help="Start HTTP adapter instead of stdio")
+    parser = argparse.ArgumentParser(description="AWS CLI Assistant - Multiple modes")
+    parser.add_argument("--mode", choices=["mcp", "web", "cli"], default="mcp", 
+                       help="Mode: mcp (Claude Desktop), web (HTTP server), cli (interactive)")
+    # Keep backward compatibility
+    parser.add_argument("--http", action="store_true", help="Start HTTP adapter (deprecated, use --mode web)")
     args = parser.parse_args()
 
+    # Handle backward compatibility
     if args.http:
+        print("⚠️  --http is deprecated, use --mode web")
         run_http()
-    else:
+    elif args.mode == "web":
+        print("🌐 Starting HTTP server mode...")
+        run_http()
+    elif args.mode == "cli":
+        print("💻 Starting interactive CLI mode...")
+        run_cli()
+    else:  # mcp mode (default)
+        print("🔗 Starting MCP server for Claude Desktop...")
         asyncio.run(run_stdio())
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@ version = '1.0.1'
 setup(
     name='aws-cli-assistant-lite',
     version=version,
-    description='Natural language to AWS CLI converter with real-time validation',
+    description='Natural language to AWS CLI converter with MCP, Web, and CLI modes',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Malini Agrawal',
