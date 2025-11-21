@@ -9,7 +9,7 @@ from pathlib import Path
 readme_file = Path(__file__).parent / 'README.md'
 long_description = readme_file.read_text(encoding='utf-8') if readme_file.exists() else ''
 
-version = '1.0.3'
+version = '1.0.4'
 
 setup(
     name='aws-cli-assistant-lite',
