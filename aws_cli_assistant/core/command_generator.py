@@ -21,15 +21,15 @@ def generate_command(intent: str, entities: dict):
     Returns:
         tuple: (command_str, description_str)
     """
-    if "s3" in intent:
+    if intent.startswith("s3_") or intent == "list_s3_buckets":
         return parse_s3_intent(intent, entities), f"S3 operation: {intent}"
-    if "ec2" in intent:
+    elif intent.startswith("ec2_") or intent == "list_ec2_instances" or intent == "describe_ec2_instances":
         return parse_ec2_intent(intent, entities), f"EC2 operation: {intent}"
-    if "lambda" in intent:
+    elif intent.startswith("lambda_") or intent == "list_lambda_functions":
         return parse_lambda_intent(intent, entities), f"Lambda operation: {intent}"
-    if "dynamodb" in intent:
+    elif intent.startswith("dynamodb_") or intent == "list_dynamodb_tables":
         return parse_dynamodb_intent(intent, entities), f"DynamoDB operation: {intent}"
-    if "iam" in intent:
+    elif intent.startswith("iam_") or intent == "list_iam_users" or intent == "list_iam_roles":
         return parse_iam_intent(intent, entities), f"IAM operation: {intent}"
 
     logger.warning("Unsupported intent: %s", intent)
